@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: Tests + defense gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Tests + coverage gate (>= 90%)
+        run: pytest --cov=aegis --cov-report=term-missing --cov-fail-under=90
+      - name: Defense block-rate gate (>= 95% of the corpus)
+        run: python -m aegis.cli gate --threshold 0.95

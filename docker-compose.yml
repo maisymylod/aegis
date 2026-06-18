@@ -1,0 +1,13 @@
+name: aegis
+
+services:
+  authority:
+    build: .
+    environment:
+      # Point at a live groundstation to sign its approved commands end to end
+      # (otherwise the authority runs self-contained):
+      # GROUNDSTATION_API: http://host.docker.internal:8800
+      PYTHONUNBUFFERED: "1"
+    ports:
+      # Host port 8600 coexists with constellation (8000) and groundstation (8800).
+      - "8600:8600"
