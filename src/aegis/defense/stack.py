@@ -70,6 +70,12 @@ class DefenseStack:
             decision = self._policy.check(call)
             if not decision.allowed:
                 return decision
+        if self.config.output_guard:
+            # Tool arguments are an egress path: an allowed tool carries the
+            # secret out just as well as the assistant's prose does.
+            decision = self._output.scan_arguments(call)
+            if not decision.allowed:
+                return decision
         return _CLEAN
 
     def on_output(self, text: str) -> tuple[str, GuardDecision]:
